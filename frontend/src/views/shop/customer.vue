@@ -4,8 +4,8 @@
       <b-card>
         <b-card-header>
           <h4 class="card-title">Customer</h4>
-          <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary">
-            Add
+          <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" variant="primary" to="/">
+            Add New
           </b-button>
         </b-card-header>
         <b-card-body>

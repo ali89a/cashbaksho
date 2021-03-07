@@ -1,0 +1,142 @@
+<template>
+  <b-row>
+    <b-col cols="12">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Customer Information</span>
+        </div>
+        <div class="card-body">
+          <validation-observer ref="createCustomer">
+            <b-form>
+              <b-row>
+                <b-col md="6">
+                  <b-form-group>
+                    <validation-provider
+                      #default="{ errors }"
+                      name="Full Name"
+                      rules="required"
+                    >
+                      <b-form-input
+                        v-model="form.name"
+                        :state="errors.length > 0 ? false:null"
+                        placeholder="Full Name"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </validation-provider>
+                  </b-form-group>
+                </b-col>
+                <b-col md="6">
+                  <b-form-group>
+                    <validation-provider
+                      #default="{ errors }"
+                      name="Phone number"
+                    >
+                      <b-form-input
+                        v-model="form.phone_number"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="Phone number"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </validation-provider>
+                  </b-form-group>
+                </b-col>
+                <b-col md="6">
+                  <b-form-group>
+                    <validation-provider
+                      #default="{ errors }"
+                      name="Previous Due"
+                    >
+                      <b-form-input
+                        v-model="form.previous_due"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="Previous due"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </validation-provider>
+                  </b-form-group>
+                </b-col>
+                <b-col md="6">
+                  <b-form-group>
+                    <validation-provider
+                      #default="{ errors }"
+                      name="Description"
+                    >
+                      <b-form-textarea
+                        v-model="form.description"
+                        :state="errors.length > 0 ? false:null"
+                        placeholder="Description"
+                        rows="3"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </validation-provider>
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12">
+                  <b-button
+                    variant="primary"
+                    type="submit"
+                    @click.prevent="validationForm"
+                  >
+                    Submit
+                  </b-button>
+                </b-col>
+              </b-row>
+            </b-form>
+          </validation-observer>
+        </div>
+      </div>
+      <!-- form -->
+    </b-col>
+  </b-row>
+</template>
+
+<script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import {
+  BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
+} from 'bootstrap-vue'
+import { required } from '@validations'
+import axiosIns from '@/libs/axios'
+
+export default {
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+    BFormInput,
+    BFormGroup,
+    BForm,
+    BRow,
+    BCol,
+    BButton,
+  },
+  data() {
+    return {
+      form: {
+        name: '',
+        phone_number: '',
+        previous_due: '',
+        description: '',
+      },
+      required,
+    }
+  },
+  methods: {
+    validationForm() {
+      this.$refs.createCustomer.validate().then(success => {
+        if (success) {
+          axiosIns.get('api/v1/shop/customer').then(response => {
+            console.log(response)
+            this.$bvToast.toast('Customer created successfully.', {
+              title: 'Success',
+              variant: 'success',
+              solid: true,
+            })
+          })
+        }
+      })
+    },
+  },
+}
+</script>

@@ -5,8 +5,8 @@ export default [
     icon: 'HomeIcon',
   },
   {
-    title: 'Second Page',
-    route: 'second-page',
+    title: 'Customer',
+    route: 'shop.customer',
     icon: 'FileIcon',
   },
 ]
