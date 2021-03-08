@@ -10,7 +10,7 @@
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group>
+                  <b-form-group label="Full name">
                     <validation-provider
                       #default="{ errors }"
                       name="Full Name"
@@ -26,7 +26,7 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group>
+                  <b-form-group label="Phone number">
                     <validation-provider
                       #default="{ errors }"
                       name="Phone number"
@@ -42,7 +42,7 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group>
+                  <b-form-group label="Previous Due">
                     <validation-provider
                       #default="{ errors }"
                       name="Previous Due"
@@ -58,7 +58,7 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group>
+                  <b-form-group label="Description">
                     <validation-provider
                       #default="{ errors }"
                       name="Description"
@@ -126,8 +126,12 @@ export default {
     validationForm() {
       this.$refs.createCustomer.validate().then(success => {
         if (success) {
-          axiosIns.get('api/v1/shop/customer').then(response => {
+          axiosIns.post('api/v1/shop/customer', this.form).then(response => {
             console.log(response)
+            // first reset your form values
+            this.form.name = ''
+            // then do this to reset your ValidationObserver
+            this.$nextTick(() => this.$refs.createCustomer.reset())
             this.$bvToast.toast('Customer created successfully.', {
               title: 'Success',
               variant: 'success',

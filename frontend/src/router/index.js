@@ -15,14 +15,6 @@ const router = new VueRouter({
   routes: [
     ...shop,
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/Login.vue'),
-      meta: {
-        layout: 'full',
-      },
-    },
-    {
       path: '/error-404',
       name: 'error-404',
       component: () => import('@/views/error/Error404.vue'),
@@ -35,6 +27,38 @@ const router = new VueRouter({
       redirect: 'error-404',
     },
   ],
+})
+
+function isLoggedIn() {
+  return localStorage.getItem('accessToken')
+}
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.authOnly)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!isLoggedIn()) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath },
+      })
+    } else {
+      next()
+    }
+  } else if (to.matched.some(record => record.meta.guestOnly)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (isLoggedIn()) {
+      next({
+        path: '/',
+        // query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // make sure to always call next()!
+  }
 })
 
 // ? For splash screen

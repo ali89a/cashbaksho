@@ -27,7 +27,7 @@ Route::group(['prefix' => 'v1/shop','as'=>'shop.'],function (){
     Route::post('login',[UserAuthController::class,'login'])->name('login');
     Route::post('logout',[UserAuthController::class,'logout'])->name('logout');
 
-    Route::apiResource('customer',CustomerController::class);
+//    Route::apiResource('customer',CustomerController::class);
 //    Route::get('users',function (){
 //        return \App\Models\User::all();
 //    });
@@ -36,7 +36,7 @@ Route::group(['prefix' => 'v1/shop','as'=>'shop.'],function (){
         Route::post('logout',[UserAuthController::class,'logout'])->name('logout');
 //        Route::get('users',[UserAuthController::class,'getAllUsers'])->name('get.users');
         Route::get('my-info',[UserAuthController::class,'getLoggedUserDetails'])->name('get.myInfo');
-//        Route::apiResource('customer',CustomerController::class);
+        Route::apiResource('customer',CustomerController::class);
         Route::apiResource('supplier',SupplierController::class);
         Route::apiResource('purchase',PurchaseController::class);
         Route::apiResource('sale',SaleController::class);

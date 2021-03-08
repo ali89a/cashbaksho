@@ -1,10 +1,9 @@
 <template>
-  <div class="row">
-    <div class="col-12">
-      <b-card>
-        <b-card-header>
-          <h4 class="card-title">
-            Customer</h4>
+  <b-row>
+    <b-col cols="12">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Customer Information</span>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
@@ -12,8 +11,8 @@
           >
             Add New
           </b-button>
-        </b-card-header>
-        <b-card-body>
+        </div>
+        <div class="card-body">
           <!-- search input -->
           <div class="custom-search d-flex justify-content-end">
             <b-form-group>
@@ -30,6 +29,7 @@
           </div>
           <!-- table -->
           <vue-good-table
+            ref="customerTable"
             :columns="columns"
             :rows="rows"
             :search-options="{
@@ -39,6 +39,7 @@
               enabled: true,
               perPage:pageLength
             }"
+            :line-numbers="true"
           >
             <template
               slot="table-row"
@@ -84,7 +85,7 @@
                         icon="TrashIcon"
                         class="mr-50"
                       />
-                      <span>Delete</span>
+                      <span><a href="" @click.prevent="DeleteData(props.row.id)">Delete</a></span>
                     </b-dropdown-item>
                   </b-dropdown>
                 </span>
@@ -144,10 +145,10 @@
               </div>
             </template>
           </vue-good-table>
-        </b-card-body>
-      </b-card>
-    </div>
-  </div>
+        </div>
+      </div>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
@@ -194,9 +195,22 @@ export default {
   computed: {},
   created() {
     axiosIns.get('api/v1/shop/customer').then(response => {
-      console.log(response.data)
+      // console.log(response.data)
       this.rows = response.data
     })
+  },
+  methods: {
+    DeleteData(id) {
+      axiosIns.delete(`api/v1/shop/customer/${id}`).then(response => {
+        console.log(response.data)
+        // this.$refs.customerTable.refresh()
+        this.$bvToast.toast(response.data, {
+          title: 'Success',
+          variant: 'success',
+          solid: true,
+        })
+      })
+    },
   },
 }
 </script>

@@ -22,9 +22,9 @@ class CustomerController extends Controller
 //        return $request->user()->shop->id;
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone_number' => 'numeric',
-            'previous_due' => 'numeric',
-            'description' => 'string|max:500',
+            'phone_number' => 'numeric|nullable',
+            'previous_due' => 'numeric|nullable',
+            'description' => 'nullable|string|max:500',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -88,6 +88,13 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $customer = Customer::find($id);
+        if ($customer){
+            $customer->delete();
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer deleted successfully.',
+        ]);
     }
 }

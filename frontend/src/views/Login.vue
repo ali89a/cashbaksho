@@ -193,7 +193,8 @@ import {
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+import axiosIns from '@/libs/axios'
+import useJwt from '@/auth/jwt/useJwt'
 
 export default {
   components: {
@@ -243,13 +244,27 @@ export default {
     validationForm() {
       this.$refs.loginValidation.validate().then(success => {
         if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: 'Form Submitted',
-              icon: 'EditIcon',
-              variant: 'success',
-            },
+          axiosIns.post('api/v1/shop/login', {
+            email: this.userEmail,
+            password: this.password,
+          }).then(response => {
+            useJwt.setToken(response.data.access_token)
+            useJwt.setRefreshToken(response.data.refresh_token)
+            console.log(response)
+            this.$router.push({ name: 'user.homepage' })
+          }).catch(error => {
+            // this.$refs.loginValidation.setErrors(error.response.data.error)
+            console.log(error)
+            if (error.response.status === 422) {
+              // this.errors = error.response.data.error
+              this.$bvToast.toast(error.response.data.errors, {
+                title: 'Failed',
+                variant: 'danger',
+                solid: true,
+              })
+            }
+            // this.errors = error.response.data.errors
+            console.log(error.response.data)
           })
         }
       })
