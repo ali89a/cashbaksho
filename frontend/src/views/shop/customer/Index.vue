@@ -85,7 +85,10 @@
                         icon="TrashIcon"
                         class="mr-50"
                       />
-                      <span><a href="" @click.prevent="DeleteData(props.row.id)">Delete</a></span>
+                      <span><a
+                        href=""
+                        @click.prevent="DeleteData(props.row.id)"
+                      >Delete</a></span>
                     </b-dropdown-item>
                   </b-dropdown>
                 </span>
@@ -204,7 +207,7 @@ export default {
       axiosIns.delete(`api/v1/shop/customer/${id}`).then(response => {
         console.log(response.data)
         // this.$refs.customerTable.refresh()
-        this.$bvToast.toast(response.data, {
+        this.$bvToast.toast(response.data.message, {
           title: 'Success',
           variant: 'success',
           solid: true,
