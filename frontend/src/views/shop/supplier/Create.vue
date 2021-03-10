@@ -3,10 +3,10 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Customer Information</span>
+          <span class="card-title">Supplier Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createCustomer">
+          <validation-observer ref="createsupplier">
             <b-form>
               <b-row>
                 <b-col md="6">
@@ -124,17 +124,17 @@ export default {
   },
   methods: {
     validationForm() {
-      this.$refs.createCustomer.validate().then(success => {
+      this.$refs.createsupplier.validate().then(success => {
         if (success) {
-          axiosIns.post('api/v1/shop/customer', this.form).then(response => {
+          axiosIns.post('api/v1/shop/supplier', this.form).then(response => {
             // console.log(response)
             // first reset your form values
             for (let key in this.form ) {
               this.form[key] = ''
             }
             // then do this to reset your ValidationObserver
-            this.$nextTick(() => this.$refs.createCustomer.reset())
-            this.$bvToast.toast('Customer created successfully.', {
+            this.$nextTick(() => this.$refs.createsupplier.reset())
+            this.$bvToast.toast('supplier created successfully.', {
               title: 'Success',
               variant: 'success',
               solid: true,

@@ -3,11 +3,11 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Customer Information</span>
+          <span class="card-title">Supplier Information</span>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name:'shop.customer.create' }"
+            :to="{ name:'shop.supplier.create' }"
           >
             Add New
           </b-button>
@@ -29,7 +29,7 @@
           </div>
           <!-- table -->
           <vue-good-table
-            ref="customerTable"
+            ref="supplierTable"
             :columns="columns"
             :rows="rows"
             :search-options="{
@@ -77,7 +77,7 @@
                         icon="Edit2Icon"
                         class="mr-50"
                       />
-                      <span><router-link :to="{name:'shop.customer.edit',params:{id:props.row.id}}">Edit</router-link></span>
+                      <span><router-link :to="{name:'shop.supplier.edit',params:{id:props.row.id}}">Edit</router-link></span>
                     </b-dropdown-item>
                     <b-dropdown-item>
                       <feather-icon
@@ -196,7 +196,7 @@ export default {
   },
   computed: {},
   created() {
-    this.getCustomerData()
+    this.getsupplierData()
   },
   methods: {
     DeleteData(id) {
@@ -213,7 +213,7 @@ export default {
         })
         .then(value => {
           if (value) {
-            axiosIns.delete(`api/v1/shop/customer/${id}`).then(response => {
+            axiosIns.delete(`api/v1/shop/supplier/${id}`).then(response => {
               // console.log(response.data)
 
               this.$bvToast.toast(response.data.message, {
@@ -221,13 +221,13 @@ export default {
                 variant: 'success',
                 solid: true,
               })
-              this.getCustomerData()
+              this.getsupplierData()
             })
           }
         })
     },
-    getCustomerData() {
-      axiosIns.get('api/v1/shop/customer').then(response => {
+    getsupplierData() {
+      axiosIns.get('api/v1/shop/supplier').then(response => {
         // console.log(response.data)
         this.rows = response.data
       })

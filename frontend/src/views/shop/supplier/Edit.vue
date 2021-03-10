@@ -3,10 +3,10 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Customer Information</span>
+          <span class="card-title">Supplier Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createCustomer">
+          <validation-observer ref="createsupplier">
             <b-form>
               <b-row>
                 <b-col md="6">
@@ -42,22 +42,6 @@
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Previous Due">
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Previous Due"
-                    >
-                      <b-form-input
-                        v-model="form.previous_due"
-                        :state="errors.length > 0 ? false:null"
-                        type="text"
-                        placeholder="Previous due"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
-                </b-col>
-                <b-col md="6">
                   <b-form-group label="Description">
                     <validation-provider
                       #default="{ errors }"
@@ -79,7 +63,7 @@
                     type="submit"
                     @click.prevent="validationForm"
                   >
-                    Submit
+                    Update
                   </b-button>
                 </b-col>
               </b-row>
@@ -116,31 +100,35 @@ export default {
       form: {
         name: '',
         phone_number: '',
-        previous_due: '',
         description: '',
       },
       required,
     }
   },
+  created() {
+    this.getsupplierInfo()
+  },
   methods: {
     validationForm() {
-      this.$refs.createCustomer.validate().then(success => {
+      this.$refs.createsupplier.validate().then(success => {
         if (success) {
-          axiosIns.post('api/v1/shop/customer', this.form).then(response => {
+          axiosIns.put(`api/v1/shop/supplier/${this.$route.params.id}`, this.form).then(response => {
             // console.log(response)
-            // first reset your form values
-            for (let key in this.form ) {
-              this.form[key] = ''
-            }
-            // then do this to reset your ValidationObserver
-            this.$nextTick(() => this.$refs.createCustomer.reset())
-            this.$bvToast.toast('Customer created successfully.', {
+            this.$nextTick(() => this.$refs.createsupplier.reset())
+            this.$bvToast.toast(response.data.message, {
               title: 'Success',
               variant: 'success',
               solid: true,
             })
           })
         }
+      })
+    },
+    getsupplierInfo() {
+      axiosIns.get(`api/v1/shop/supplier/${this.$route.params.id}`).then(response => {
+        this.form.name = response.data.supplier_info.name
+        this.form.phone_number = response.data.supplier_info.phone_number
+        this.form.description = response.data.supplier_info.description
       })
     },
   },

@@ -19,7 +19,7 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        //
+        return Purchase::all();
     }
 
     public function store(Request $request)
@@ -68,7 +68,11 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        //
+        $purchase = Purchase::find($id);
+        if (!$purchase){
+            return response()->json(['success' => false, 'message' => 'No purchase found.']);
+        }
+        return response()->json(['success' => true, 'purchase_info' => $purchase,]);
     }
 
     /**
@@ -80,7 +84,26 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'item_name' => 'string|max:255',
+            'amount' => 'required|numeric',
+            'date' => '',
+            'description' => 'max:500',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors(),], 422);
+        }
+        $customer = Purchase::find($id);
+        if ($customer){
+            $customer->update([
+                'item_name' => $request->item_name,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'description' => $request->description,
+            ]);
+            return response()->json(['success' => true, 'message' => "Purchase Updated successfully.",]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Purchase found.',]);
     }
 
     /**
@@ -91,6 +114,11 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $purchase = Purchase::find($id);
+        if ($purchase){
+            $purchase->delete();
+            return response()->json(['success' => true, 'message' => 'Purchase deleted successfully.',]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Purchase found.',]);
     }
 }

@@ -3,59 +3,52 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Customer Information</span>
+          <span class="card-title">purchase Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createCustomer">
+          <validation-observer ref="createpurchase">
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Full name">
+                  <b-form-group label="Item Name">
                     <validation-provider
                       #default="{ errors }"
-                      name="Full Name"
+                      name="Item Name"
                       rules="required"
                     >
                       <b-form-input
-                        v-model="form.name"
+                        v-model="form.item_name"
                         :state="errors.length > 0 ? false:null"
-                        placeholder="Full Name"
+                        placeholder="Item Name"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Phone number">
+                  <b-form-group label="Amount">
                     <validation-provider
                       #default="{ errors }"
-                      name="Phone number"
+                      name="Amount"
+                      rules="required"
                     >
                       <b-form-input
-                        v-model="form.phone_number"
+                        v-model="form.amount"
                         :state="errors.length > 0 ? false:null"
                         type="text"
-                        placeholder="Phone number"
+                        placeholder="amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Previous Due">
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Previous Due"
-                    >
-                      <b-form-input
-                        v-model="form.previous_due"
-                        :state="errors.length > 0 ? false:null"
-                        type="text"
-                        placeholder="Previous due"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
+                  <label for="example-datepicker">Choose a date</label>
+                  <b-form-datepicker
+                      id="example-datepicker"
+                      v-model="form.date"
+                      class="mb-1"
+                  />
                 </b-col>
                 <b-col md="6">
                   <b-form-group label="Description">
@@ -95,7 +88,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import {
-  BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
+  BFormInput, BFormGroup, BForm, BRow, BCol, BButton, BFormDatepicker,
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import axiosIns from '@/libs/axios'
@@ -110,13 +103,14 @@ export default {
     BRow,
     BCol,
     BButton,
+    BFormDatepicker,
   },
   data() {
     return {
       form: {
-        name: '',
-        phone_number: '',
-        previous_due: '',
+        item_name: '',
+        amount: '',
+        date: '',
         description: '',
       },
       required,
@@ -124,17 +118,17 @@ export default {
   },
   methods: {
     validationForm() {
-      this.$refs.createCustomer.validate().then(success => {
+      this.$refs.createpurchase.validate().then(success => {
         if (success) {
-          axiosIns.post('api/v1/shop/customer', this.form).then(response => {
+          axiosIns.post('api/v1/shop/purchase', this.form).then(response => {
             // console.log(response)
             // first reset your form values
             for (let key in this.form ) {
               this.form[key] = ''
             }
             // then do this to reset your ValidationObserver
-            this.$nextTick(() => this.$refs.createCustomer.reset())
-            this.$bvToast.toast('Customer created successfully.', {
+            this.$nextTick(() => this.$refs.createpurchase.reset())
+            this.$bvToast.toast('purchase created successfully.', {
               title: 'Success',
               variant: 'success',
               solid: true,
