@@ -22,7 +22,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        return Transaction::where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class TransactionController extends Controller
                 'given' => $request->given,
                 'taken' => $request->taken,
                 'date' => $request->date,
-//                'description' => $request->description,
+                'description' => $request->description,
             ]);
         } catch (\Exception $e) {
             // something went wrong
@@ -72,7 +72,11 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        //
+        $transaction = Transaction::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if (!$transaction){
+            return response()->json(['success' => false, 'message' => 'No Transaction found.']);
+        }
+        return response()->json(['success' => true, 'transaction_info' => $transaction]);
     }
 
     /**
@@ -84,7 +88,26 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'given' => 'numeric|required_without:taken',
+            'taken' => 'numeric|required_without:given',
+            'date' => '',
+            'description' => 'max:500',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors(),], 422);
+        }
+        $transaction = Transaction::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if ($transaction){
+            $transaction->update([
+                'given' => $request->given,
+                'taken' => $request->taken,
+                'date' => $request->date,
+                'description' => $request->description,
+            ]);
+            return response()->json(['success' => true, 'message' => "Transaction Updated successfully.",]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Transaction found.',]);
     }
 
     /**
@@ -95,6 +118,11 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $transaction = Transaction::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if ($transaction){
+            $transaction->delete();
+            return response()->json(['success' => true, 'message' => 'Transaction deleted successfully.',]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Transaction found.',]);
     }
 }

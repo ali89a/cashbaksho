@@ -19,13 +19,13 @@ class SaleController extends Controller
      */
     public function index()
     {
-        //
+        return Sale::where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'item_name' => 'string|max:255',
+            'item_name' => 'required|string|max:255',
             'amount' => 'required|numeric',
             'date' => '',
             'description' => 'max:500',
@@ -68,7 +68,11 @@ class SaleController extends Controller
      */
     public function show($id)
     {
-        //
+        $sale = Sale::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if (!$sale){
+            return response()->json(['success' => false, 'message' => 'No sale found.']);
+        }
+        return response()->json(['success' => true, 'sale_info' => $sale,]);
     }
 
     /**
@@ -80,7 +84,26 @@ class SaleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'item_name' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'date' => '',
+            'description' => 'max:500',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors(),], 422);
+        }
+        $sale = Sale::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if ($sale){
+            $sale->update([
+                'item_name' => $request->item_name,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'description' => $request->description,
+            ]);
+            return response()->json(['success' => true, 'message' => "Sale Updated successfully.",]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Sale found.',]);
     }
 
     /**
@@ -91,6 +114,11 @@ class SaleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $sale = Sale::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if ($sale){
+            $sale->delete();
+            return response()->json(['success' => true, 'message' => 'Sale deleted successfully.',]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Sale found.',]);
     }
 }

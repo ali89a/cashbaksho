@@ -10,8 +10,8 @@ use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\User\AuthController as UserAuthController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::group(['prefix' => 'V1/admin','as'=>'admin.'],function (){
+//admin routes
+Route::group(['prefix' => 'v1/admin','as'=>'admin.'],function (){
     Route::post('login',[AdminAuthController::class,'login'])->name('login');
 
     Route::group(['middleware' => ['auth:admin-api','scope:admin']],function (){
@@ -21,16 +21,11 @@ Route::group(['prefix' => 'V1/admin','as'=>'admin.'],function (){
     });
 });
 
-//user routes
+//user shop routes
 Route::group(['prefix' => 'v1/shop','as'=>'shop.'],function (){
     Route::post('register',[UserAuthController::class,'register'])->name('register');
     Route::post('login',[UserAuthController::class,'login'])->name('login');
     Route::post('logout',[UserAuthController::class,'logout'])->name('logout');
-
-//    Route::apiResource('customer',CustomerController::class);
-//    Route::get('users',function (){
-//        return \App\Models\User::all();
-//    });
 
     Route::group(['middleware' => ['auth:user-api','scope:user']],function (){
         Route::post('logout',[UserAuthController::class,'logout'])->name('logout');

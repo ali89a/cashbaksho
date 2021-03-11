@@ -19,13 +19,13 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        return Purchase::all();
+        return Purchase::where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'item_name' => 'string|max:255',
+            'item_name' => 'required|string|max:255',
             'amount' => 'required|numeric',
             'date' => '',
             'description' => 'max:500',
@@ -68,7 +68,7 @@ class PurchaseController extends Controller
      */
     public function show($id)
     {
-        $purchase = Purchase::find($id);
+        $purchase = Purchase::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if (!$purchase){
             return response()->json(['success' => false, 'message' => 'No purchase found.']);
         }
@@ -85,7 +85,7 @@ class PurchaseController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'item_name' => 'string|max:255',
+            'item_name' => 'required|string|max:255',
             'amount' => 'required|numeric',
             'date' => '',
             'description' => 'max:500',
@@ -93,7 +93,7 @@ class PurchaseController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors(),], 422);
         }
-        $customer = Purchase::find($id);
+        $customer = Purchase::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($customer){
             $customer->update([
                 'item_name' => $request->item_name,
@@ -114,11 +114,11 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        $purchase = Purchase::find($id);
+        $purchase = Purchase::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($purchase){
             $purchase->delete();
-            return response()->json(['success' => true, 'message' => 'Purchase deleted successfully.',]);
+            return response()->json(['success' => true, 'message' => 'Purchase deleted successfully.']);
         }
-        return response()->json(['success' => false, 'message' => 'No Purchase found.',]);
+        return response()->json(['success' => false, 'message' => 'No Purchase found.']);
     }
 }

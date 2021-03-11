@@ -14,7 +14,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        return Customer::all();
+        return Customer::where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
@@ -58,7 +58,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::find($id);
+        $customer = Customer::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if (!$customer){
             return response()->json(['success' => false, 'message' => 'No customer found.']);
         }
@@ -82,7 +82,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors(),], 422);
         }
-        $customer = Customer::find($id);
+        $customer = Customer::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($customer){
             $customer->update([
                 'name' => $request->name,
@@ -102,7 +102,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $customer = Customer::find($id);
+        $customer = Customer::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($customer){
             $customer->delete();
             return response()->json(['success' => true, 'message' => 'Customer deleted successfully.',]);

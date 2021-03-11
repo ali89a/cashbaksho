@@ -19,7 +19,7 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        //
+        return Expense::where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
@@ -68,7 +68,11 @@ class ExpenseController extends Controller
      */
     public function show($id)
     {
-        //
+        $expense = Expense::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if (!$expense){
+            return response()->json(['success' => false, 'message' => 'No Expense found.']);
+        }
+        return response()->json(['success' => true, 'expense_info' => $expense]);
     }
 
     /**
@@ -80,7 +84,26 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'item_name' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'date' => '',
+            'description' => 'max:500',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors(),], 422);
+        }
+        $expense = Expense::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if ($expense){
+            $expense->update([
+                'item_name' => $request->item_name,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'description' => $request->description,
+            ]);
+            return response()->json(['success' => true, 'message' => "Expense Updated successfully.",]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Expense found.',]);
     }
 
     /**
@@ -91,6 +114,11 @@ class ExpenseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $expense = Expense::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
+        if ($expense){
+            $expense->delete();
+            return response()->json(['success' => true, 'message' => 'Expense deleted successfully.',]);
+        }
+        return response()->json(['success' => false, 'message' => 'No Expense found.',]);
     }
 }

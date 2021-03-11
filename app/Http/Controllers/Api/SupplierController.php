@@ -13,7 +13,7 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        return Supplier::all();
+        return Supplier::where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
@@ -58,7 +58,7 @@ class SupplierController extends Controller
      */
     public function show($id)
     {
-        $supplier = Supplier::find($id);
+        $supplier = Supplier::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($supplier){
             return response()->json([
                 'success' => true,
@@ -85,7 +85,7 @@ class SupplierController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors(),],422);
         }
-        $supplier = Supplier::find($id);
+        $supplier = Supplier::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($supplier){
             $supplier->update([
                 'name' => $request->name,
@@ -105,7 +105,7 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        $supplier = Supplier::find($id);
+        $supplier = Supplier::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($supplier){
             $supplier->delete();
             return response()->json(['success' => true, 'message' => 'Supplier deleted successfully.',]);
