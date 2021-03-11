@@ -9,6 +9,15 @@ export default [
     },
   },
   {
+    path: '/register',
+    name: 'user.register',
+    component: () => import('@/views/Register.vue'),
+    meta: {
+      layout: 'full',
+      guestOnly: true,
+    },
+  },
+  {
     path: '/',
     name: 'user.homepage',
     component: () => import('@/views/Home.vue'),
@@ -171,6 +180,192 @@ export default [
         },
         {
           text: 'Edit',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/sale',
+    name: 'shop.sale',
+    component: () => import('@/views/shop/sale/Index.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Sales',
+      breadcrumb: [
+        {
+          text: 'Sales list',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/sale/create',
+    name: 'shop.sale.create',
+    component: () => import('@/views/shop/sale/Create.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Create sale',
+      breadcrumb: [
+        {
+          text: 'Sale',
+        },
+        {
+          text: 'Create',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/sale/edit/:id',
+    name: 'shop.sale.edit',
+    component: () => import('@/views/shop/sale/Edit.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Edit sale',
+      breadcrumb: [
+        {
+          text: 'Sale',
+        },
+        {
+          text: 'Edit',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/transaction',
+    name: 'shop.transaction',
+    component: () => import('@/views/shop/transaction/Index.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Transaction',
+      breadcrumb: [
+        {
+          text: 'Transaction list',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/transaction/create',
+    name: 'shop.transaction.create',
+    component: () => import('@/views/shop/transaction/Create.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Create transaction',
+      breadcrumb: [
+        {
+          text: 'transaction',
+        },
+        {
+          text: 'Create',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/transaction/edit/:id',
+    name: 'shop.transaction.edit',
+    component: () => import('@/views/shop/transaction/Edit.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Edit transaction',
+      breadcrumb: [
+        {
+          text: 'transaction',
+        },
+        {
+          text: 'Edit',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/product',
+    name: 'shop.product',
+    component: () => import('@/views/shop/product/Index.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'product',
+      breadcrumb: [
+        {
+          text: 'product list',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/product/create',
+    name: 'shop.product.create',
+    component: () => import('@/views/shop/product/Create.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Create product',
+      breadcrumb: [
+        {
+          text: 'product',
+        },
+        {
+          text: 'Create',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/product/edit/:id',
+    name: 'shop.product.edit',
+    component: () => import('@/views/shop/product/Edit.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Edit product',
+      breadcrumb: [
+        {
+          text: 'product',
+        },
+        {
+          text: 'Edit',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/emi',
+    name: 'shop.emi',
+    component: () => import('@/views/shop/emi/Index.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Emi',
+      breadcrumb: [
+        {
+          text: 'Emi list',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/emi/create',
+    name: 'shop.emi.create',
+    component: () => import('@/views/shop/emi/Create.vue'),
+    meta: {
+      authOnly: true,
+      pageTitle: 'Create emi',
+      breadcrumb: [
+        {
+          text: 'Emi',
+        },
+        {
+          text: 'Create',
           active: true,
         },
       ],

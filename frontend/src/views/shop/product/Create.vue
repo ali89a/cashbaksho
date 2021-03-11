@@ -3,64 +3,55 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">sale Information</span>
+          <span class="card-title">product Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createsale">
+          <validation-observer ref="createproduct">
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Item Name">
+                  <b-form-group label="name">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Item Name"
-                        rules="required"
+                      #default="{ errors }"
+                      name="Name"
+                      rules="required"
                     >
                       <b-form-input
-                          v-model="form.item_name"
-                          :state="errors.length > 0 ? false:null"
-                          placeholder="Item Name"
+                        v-model="form.name"
+                        :state="errors.length > 0 ? false:null"
+                        placeholder="Full Name"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Amount">
+                  <b-form-group label="SKU">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Amount"
-                        rules="required"
+                      #default="{ errors }"
+                      name="SKU"
                     >
                       <b-form-input
-                          v-model="form.amount"
-                          :state="errors.length > 0 ? false:null"
-                          type="text"
-                          placeholder="amount"
+                        v-model="form.sku"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="sku"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <label for="example-datepicker">Choose a date</label>
-                  <b-form-datepicker
-                      id="example-datepicker"
-                      v-model="form.date"
-                      class="mb-1"
-                  />
-                </b-col>
-                <b-col md="6">
-                  <b-form-group label="Description">
+                  <b-form-group label="Price">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Description"
+                      #default="{ errors }"
+                      name="Price"
                     >
-                      <b-form-textarea
-                          v-model="form.description"
-                          :state="errors.length > 0 ? false:null"
-                          placeholder="Description"
-                          rows="3"
+                      <b-form-input
+                        v-model="form.price"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="Price"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -68,9 +59,9 @@
                 </b-col>
                 <b-col cols="12">
                   <b-button
-                      variant="primary"
-                      type="submit"
-                      @click.prevent="validationForm"
+                    variant="primary"
+                    type="submit"
+                    @click.prevent="validationForm"
                   >
                     Submit
                   </b-button>
@@ -88,7 +79,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import {
-  BFormInput, BFormGroup, BForm, BRow, BCol, BButton, BFormDatepicker,
+  BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import axiosIns from '@/libs/axios'
@@ -103,32 +94,30 @@ export default {
     BRow,
     BCol,
     BButton,
-    BFormDatepicker,
   },
   data() {
     return {
       form: {
-        item_name: '',
-        amount: '',
-        date: '',
-        description: '',
+        name: '',
+        sku: '',
+        price: '',
       },
       required,
     }
   },
   methods: {
     validationForm() {
-      this.$refs.createsale.validate().then(success => {
+      this.$refs.createproduct.validate().then(success => {
         if (success) {
-          axiosIns.post('api/v1/shop/sale', this.form).then(response => {
+          axiosIns.post('api/v1/shop/product', this.form).then(response => {
             // console.log(response)
             // first reset your form values
             for (let key in this.form ) {
               this.form[key] = ''
             }
             // then do this to reset your ValidationObserver
-            this.$nextTick(() => this.$refs.createsale.reset())
-            this.$bvToast.toast('sale created successfully.', {
+            this.$nextTick(() => this.$refs.createproduct.reset())
+            this.$bvToast.toast('product created successfully.', {
               title: 'Success',
               variant: 'success',
               solid: true,

@@ -3,11 +3,11 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">transaction Information</span>
+          <span class="card-title">emi Information</span>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name:'shop.transaction.create' }"
+            :to="{ name:'shop.emi.create' }"
           >
             Add New
           </b-button>
@@ -29,7 +29,7 @@
           </div>
           <!-- table -->
           <vue-good-table
-            ref="transactionTable"
+            ref="emiTable"
             :columns="columns"
             :rows="rows"
             :search-options="{
@@ -77,7 +77,7 @@
                         icon="Edit2Icon"
                         class="mr-50"
                       />
-                      <span><router-link :to="{name:'shop.transaction.edit',params:{id:props.row.id}}">Edit</router-link></span>
+                      <span><router-link :to="{name:'shop.emi.edit',params:{id:props.row.id}}">Edit</router-link></span>
                     </b-dropdown-item>
                     <b-dropdown-item>
                       <feather-icon
@@ -174,20 +174,20 @@ export default {
       dir: false,
       columns: [
         {
-          label: 'Type',
-          field: 'type',
+          label: 'Product Name',
+          field: 'name',
         },
         {
-          label: 'Taken',
-          field: 'taken',
+          label: 'Customer Name',
+          field: 'customer_name',
         },
         {
-          label: 'Given',
-          field: 'given',
+          label: 'Total Amount',
+          field: 'total_amount',
         },
         {
-          label: 'Date',
-          field: 'date',
+          label: 'Total Installment',
+          field: 'total_installment',
         },
         {
           label: 'Action',
@@ -200,7 +200,7 @@ export default {
   },
   computed: {},
   created() {
-    this.gettransactionData()
+    this.getemiData()
   },
   methods: {
     DeleteData(id) {
@@ -217,7 +217,7 @@ export default {
         })
         .then(value => {
           if (value) {
-            axiosIns.delete(`api/v1/shop/transaction/${id}`).then(response => {
+            axiosIns.delete(`api/v1/shop/emi/${id}`).then(response => {
               // console.log(response.data)
 
               this.$bvToast.toast(response.data.message, {
@@ -225,15 +225,15 @@ export default {
                 variant: 'success',
                 solid: true,
               })
-              this.gettransactionData()
+              this.getemiData()
             })
           }
         })
     },
-    gettransactionData() {
-      axiosIns.get('api/v1/shop/transaction').then(response => {
+    getemiData() {
+      axiosIns.get('api/v1/shop/emi').then(response => {
         // console.log(response.data)
-        this.rows = response.data.data
+        this.rows = response.data
       })
     },
   },

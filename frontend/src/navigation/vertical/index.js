@@ -29,4 +29,14 @@ export default [
     route: 'shop.transaction',
     icon: 'FileIcon',
   },
+  {
+    title: 'Product',
+    route: 'shop.product',
+    icon: 'FileIcon',
+  },
+  {
+    title: 'Emi',
+    route: 'shop.emi',
+    icon: 'FileIcon',
+  },
 ]

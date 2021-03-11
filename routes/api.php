@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\EmiController;
 use App\Http\Controllers\Api\ExpenseController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PurchaseController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SupplierController;
@@ -37,6 +39,8 @@ Route::group(['prefix' => 'v1/shop','as'=>'shop.'],function (){
         Route::apiResource('sale',SaleController::class);
         Route::apiResource('expense',ExpenseController::class);
         Route::apiResource('transaction',TransactionController::class);
+        Route::apiResource('product',ProductController::class);
+        Route::apiResource('emi',EmiController::class);
     });
 });
 

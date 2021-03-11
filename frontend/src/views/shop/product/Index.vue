@@ -3,11 +3,11 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">transaction Information</span>
+          <span class="card-title">product Information</span>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
-            :to="{ name:'shop.transaction.create' }"
+            :to="{ name:'shop.product.create' }"
           >
             Add New
           </b-button>
@@ -29,7 +29,7 @@
           </div>
           <!-- table -->
           <vue-good-table
-            ref="transactionTable"
+            ref="productTable"
             :columns="columns"
             :rows="rows"
             :search-options="{
@@ -77,7 +77,7 @@
                         icon="Edit2Icon"
                         class="mr-50"
                       />
-                      <span><router-link :to="{name:'shop.transaction.edit',params:{id:props.row.id}}">Edit</router-link></span>
+                      <span><router-link :to="{name:'shop.product.edit',params:{id:props.row.id}}">Edit</router-link></span>
                     </b-dropdown-item>
                     <b-dropdown-item>
                       <feather-icon
@@ -174,20 +174,16 @@ export default {
       dir: false,
       columns: [
         {
-          label: 'Type',
-          field: 'type',
+          label: 'Name',
+          field: 'name',
         },
         {
-          label: 'Taken',
-          field: 'taken',
+          label: 'SKU',
+          field: 'sku',
         },
         {
-          label: 'Given',
-          field: 'given',
-        },
-        {
-          label: 'Date',
-          field: 'date',
+          label: 'Price',
+          field: 'price',
         },
         {
           label: 'Action',
@@ -200,7 +196,7 @@ export default {
   },
   computed: {},
   created() {
-    this.gettransactionData()
+    this.getproductData()
   },
   methods: {
     DeleteData(id) {
@@ -217,7 +213,7 @@ export default {
         })
         .then(value => {
           if (value) {
-            axiosIns.delete(`api/v1/shop/transaction/${id}`).then(response => {
+            axiosIns.delete(`api/v1/shop/product/${id}`).then(response => {
               // console.log(response.data)
 
               this.$bvToast.toast(response.data.message, {
@@ -225,15 +221,15 @@ export default {
                 variant: 'success',
                 solid: true,
               })
-              this.gettransactionData()
+              this.getproductData()
             })
           }
         })
     },
-    gettransactionData() {
-      axiosIns.get('api/v1/shop/transaction').then(response => {
+    getproductData() {
+      axiosIns.get('api/v1/shop/product').then(response => {
         // console.log(response.data)
-        this.rows = response.data.data
+        this.rows = response.data
       })
     },
   },

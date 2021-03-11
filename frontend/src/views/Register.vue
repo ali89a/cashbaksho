@@ -44,7 +44,7 @@
             Welcome to Cash Baksho! 👋
           </b-card-title>
           <b-card-text class="mb-2">
-            Please sign-in to your account
+            Please sign-up for account
           </b-card-text>
 
           <!-- form -->
@@ -53,6 +53,46 @@
               class="auth-login-form mt-2"
               @submit.prevent
             >
+              <!-- shop name -->
+              <b-form-group
+                  label="Shop Name"
+                  label-for="shop_name"
+              >
+                <validation-provider
+                    #default="{ errors }"
+                    name="Shop Name"
+                    rules="required"
+                >
+                  <b-form-input
+                      id="login-shop_name"
+                      v-model="shop_name"
+                      :state="errors.length > 0 ? false:null"
+                      name="Shop Name"
+                      placeholder="type shop name"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
+              <!-- shop name -->
+              <b-form-group
+                  label="Name"
+                  label-for="name"
+              >
+                <validation-provider
+                    #default="{ errors }"
+                    name="Name"
+                    rules="required"
+                >
+                  <b-form-input
+                      id="Name"
+                      v-model="name"
+                      :state="errors.length > 0 ? false:null"
+                      name="Name"
+                      placeholder="type your name"
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
               <!-- email -->
               <b-form-group
                 label="Email"
@@ -106,6 +146,37 @@
                 </validation-provider>
               </b-form-group>
 
+              <b-form-group>
+                <validation-provider
+                  #default="{ errors }"
+                  name="Password Confirmation"
+                  rules="required"
+                >
+                  <b-input-group
+                    class="input-group-merge"
+                    :class="errors.length > 0 ? 'is-invalid':null"
+                  >
+                    <b-form-input
+                      id="password_confirmation"
+                      v-model="password_confirmation"
+                      :state="errors.length > 0 ? false:null"
+                      class="form-control-merge"
+                      :type="passwordFieldType"
+                      name="login-password"
+                      placeholder="············"
+                    />
+                    <b-input-group-append is-text>
+                      <feather-icon
+                        class="cursor-pointer"
+                        :icon="passwordToggleIcon"
+                        @click="togglePasswordVisibility"
+                      />
+                    </b-input-group-append>
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
+
               <!-- checkbox -->
               <b-form-group>
                 <b-form-checkbox
@@ -124,15 +195,15 @@
                 block
                 @click="validationForm"
               >
-                Sign in
+                Sign up
               </b-button>
             </b-form>
           </validation-observer>
 
           <b-card-text class="text-center mt-2">
-            <span>New on our platform? </span>
-            <b-link :to="{name:'user.register'}">
-              <span>&nbsp;Create an account</span>
+            <span>Already have an account? </span>
+            <b-link :to="{name:'user.login'}">
+              <span>&nbsp;Login here</span>
             </b-link>
           </b-card-text>
         </b-col>
@@ -178,7 +249,10 @@ export default {
   data() {
     return {
       status: '',
+      shop_name: '',
+      name: '',
       password: '',
+      password_confirmation: '',
       userEmail: '',
       sideImg: require('@/assets/images/pages/login-v2.svg'),
       // validation rulesimport store from '@/store/index'
@@ -203,9 +277,12 @@ export default {
     validationForm() {
       this.$refs.loginValidation.validate().then(success => {
         if (success) {
-          axiosIns.post('api/v1/shop/login', {
+          axiosIns.post('api/v1/shop/register', {
+            shop_name: this.shop_name,
+            name: this.name,
             email: this.userEmail,
             password: this.password,
+            password_confirmation: this.password_confirmation,
           }).then(response => {
             useJwt.setToken(response.data.access_token)
             useJwt.setRefreshToken(response.data.refresh_token)

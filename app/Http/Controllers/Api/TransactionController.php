@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TransactionResource;
 use App\Models\Customer;
 use App\Models\Expense;
 use App\Models\Supplier;
@@ -18,11 +19,15 @@ class TransactionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return Transaction::where('shop_id', auth('user-api')->user()->shop_id)->get();
+        $transactions = Transaction::where('shop_id', auth('user-api')->user()->shop_id)->get();
+        return \response()->json([
+            'success' => true,
+            'data' => TransactionResource::collection($transactions),
+        ]);
     }
 
     public function store(Request $request)
@@ -34,7 +39,6 @@ class TransactionController extends Controller
             'given' => 'numeric|required_without:taken',
             'taken' => 'numeric|required_without:given',
             'date' => '',
-            'description' => 'max:500',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -43,20 +47,14 @@ class TransactionController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        try {
-            $transaction = Transaction::create([
-                'shop_id' => $request->user()->shop->id,
-                'transaction_type' => $request->type == 'customer' ? Customer::class : Supplier::class,
-                'transaction_id' => $request->id,
-                'given' => $request->given,
-                'taken' => $request->taken,
-                'date' => $request->date,
-                'description' => $request->description,
-            ]);
-        } catch (\Exception $e) {
-            // something went wrong
-            return $e;
-        }
+        $transaction = Transaction::create([
+            'shop_id' => $request->user()->shop->id,
+            'transaction_type' => $request->type == 'customer' ? Customer::class : Supplier::class,
+            'transaction_id' => $request->id,
+            'given' => $request->given,
+            'taken' => $request->taken,
+            'date' => $request->date,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -103,7 +101,6 @@ class TransactionController extends Controller
                 'given' => $request->given,
                 'taken' => $request->taken,
                 'date' => $request->date,
-                'description' => $request->description,
             ]);
             return response()->json(['success' => true, 'message' => "Transaction Updated successfully.",]);
         }

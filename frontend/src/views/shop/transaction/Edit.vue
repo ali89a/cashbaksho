@@ -3,59 +3,50 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Customer Information</span>
+          <span class="card-title">transaction Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createCustomer">
+          <validation-observer ref="createtransaction">
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Full name">
+                  <b-form-group label="Given">
                     <validation-provider
-                      #default="{ errors }"
-                      name="Full Name"
-                      rules="required"
+                        #default="{ errors }"
+                        name="Given"
                     >
                       <b-form-input
-                        v-model="form.name"
-                        :state="errors.length > 0 ? false:null"
-                        placeholder="Full Name"
+                          v-model="form.given"
+                          :state="errors.length > 0 ? false:null"
+                          placeholder="Given amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Phone number">
+                  <b-form-group label="Taken">
                     <validation-provider
-                      #default="{ errors }"
-                      name="Phone number"
+                        #default="{ errors }"
+                        name="Taken"
                     >
                       <b-form-input
-                        v-model="form.phone_number"
-                        :state="errors.length > 0 ? false:null"
-                        type="text"
-                        placeholder="Phone number"
+                          v-model="form.taken"
+                          :state="errors.length > 0 ? false:null"
+                          type="text"
+                          placeholder="Taken amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Description">
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Description"
-                    >
-                      <b-form-textarea
-                        v-model="form.description"
-                        :state="errors.length > 0 ? false:null"
-                        placeholder="Description"
-                        rows="3"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
+                  <label for="example-datepicker">Choose a date</label>
+                  <b-form-datepicker
+                      id="example-datepicker"
+                      v-model="form.date"
+                      class="mb-1"
+                  />
                 </b-col>
                 <b-col cols="12">
                   <b-button
@@ -98,23 +89,23 @@ export default {
   data() {
     return {
       form: {
-        name: '',
-        phone_number: '',
-        description: '',
+        given: '',
+        taken: '',
+        date: '',
       },
       required,
     }
   },
   created() {
-    this.getCustomerInfo()
+    this.gettransactionInfo()
   },
   methods: {
     validationForm() {
-      this.$refs.createCustomer.validate().then(success => {
+      this.$refs.createtransaction.validate().then(success => {
         if (success) {
-          axiosIns.put(`api/v1/shop/customer/${this.$route.params.id}`, this.form).then(response => {
+          axiosIns.put(`api/v1/shop/transaction/${this.$route.params.id}`, this.form).then(response => {
             // console.log(response)
-            this.$nextTick(() => this.$refs.createCustomer.reset())
+            this.$nextTick(() => this.$refs.createtransaction.reset())
             this.$bvToast.toast(response.data.message, {
               title: 'Success',
               variant: 'success',
@@ -124,11 +115,11 @@ export default {
         }
       })
     },
-    getCustomerInfo() {
-      axiosIns.get(`api/v1/shop/customer/${this.$route.params.id}`).then(response => {
-        this.form.name = response.data.customer_info.name
-        this.form.phone_number = response.data.customer_info.phone_number
-        this.form.description = response.data.customer_info.description
+    gettransactionInfo() {
+      axiosIns.get(`api/v1/shop/transaction/${this.$route.params.id}`).then(response => {
+        this.form.given = response.data.transaction_info.given
+        this.form.taken = response.data.transaction_info.taken
+        this.form.date = response.data.transaction_info.date
       })
     },
   },

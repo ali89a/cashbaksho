@@ -3,64 +3,67 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">sale Information</span>
+          <span class="card-title">Emi Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createsale">
+          <validation-observer ref="createemi">
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Item Name">
-                    <validation-provider
-                        #default="{ errors }"
-                        name="Item Name"
-                        rules="required"
+                  <b-form-group label="Product name">
+                    <select
+                        v-model="form.product_id"
+                        class="form-control"
+                        required
                     >
-                      <b-form-input
-                          v-model="form.item_name"
-                          :state="errors.length > 0 ? false:null"
-                          placeholder="Item Name"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
+                      <option value="" selected>Choose one</option>
+                      <option :value="product.id" v-for="product in products">{{ product.name }}</option>
+                    </select>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Amount">
+                  <b-form-group label="Customer Name">
                     <validation-provider
                         #default="{ errors }"
-                        name="Amount"
-                        rules="required"
+                        name="Customer Name"
                     >
                       <b-form-input
-                          v-model="form.amount"
+                          v-model="form.customer_name"
                           :state="errors.length > 0 ? false:null"
                           type="text"
-                          placeholder="amount"
+                          placeholder="Customer Name"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <label for="example-datepicker">Choose a date</label>
-                  <b-form-datepicker
-                      id="example-datepicker"
-                      v-model="form.date"
-                      class="mb-1"
-                  />
-                </b-col>
-                <b-col md="6">
-                  <b-form-group label="Description">
+                  <b-form-group label="Total amount">
                     <validation-provider
                         #default="{ errors }"
-                        name="Description"
+                        name="Total amount"
                     >
-                      <b-form-textarea
-                          v-model="form.description"
+                      <b-form-input
+                          v-model="form.total_amount"
                           :state="errors.length > 0 ? false:null"
-                          placeholder="Description"
-                          rows="3"
+                          type="text"
+                          placeholder="Total amount"
+                      />
+                      <small class="text-danger">{{ errors[0] }}</small>
+                    </validation-provider>
+                  </b-form-group>
+                </b-col>
+                <b-col md="6">
+                  <b-form-group label="Total Installment">
+                    <validation-provider
+                        #default="{ errors }"
+                        name="Total Installment"
+                    >
+                      <b-form-input
+                          v-model="form.total_installment"
+                          :state="errors.length > 0 ? false:null"
+                          type="text"
+                          placeholder="Total Installment"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -72,7 +75,7 @@
                       type="submit"
                       @click.prevent="validationForm"
                   >
-                    Update
+                    Submit
                   </b-button>
                 </b-col>
               </b-row>
@@ -88,7 +91,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import {
-  BFormInput, BFormGroup, BForm, BRow, BCol, BButton, BFormDatepicker,
+  BFormInput, BFormGroup, BForm, BRow, BCol, BButton,
 } from 'bootstrap-vue'
 import { required } from '@validations'
 import axiosIns from '@/libs/axios'
@@ -103,30 +106,35 @@ export default {
     BRow,
     BCol,
     BButton,
-    BFormDatepicker,
   },
   data() {
     return {
       form: {
-        item_name: '',
-        amount: '',
-        date: '',
-        description: '',
+        product_id: '',
+        customer_name: '',
+        total_amount: '',
+        total_installment: '',
       },
+      products: '',
       required,
     }
   },
-  created() {
-    this.getsaleInfo()
+  mounted() {
+    this.getproducts()
   },
   methods: {
     validationForm() {
-      this.$refs.createsale.validate().then(success => {
+      this.$refs.createemi.validate().then(success => {
         if (success) {
-          axiosIns.put(`api/v1/shop/sale/${this.$route.params.id}`, this.form).then(response => {
+          axiosIns.post('api/v1/shop/emi', this.form).then(response => {
             // console.log(response)
-            this.$nextTick(() => this.$refs.createsale.reset())
-            this.$bvToast.toast(response.data.message, {
+            // first reset your form values
+            for (let key in this.form ) {
+              this.form[key] = ''
+            }
+            // then do this to reset your ValidationObserver
+            this.$nextTick(() => this.$refs.createemi.reset())
+            this.$bvToast.toast('emi created successfully.', {
               title: 'Success',
               variant: 'success',
               solid: true,
@@ -135,14 +143,9 @@ export default {
         }
       })
     },
-    getsaleInfo() {
-      axiosIns.get(`api/v1/shop/sale/${this.$route.params.id}`).then(response => {
-        console.log(response.data)
-        this.form.item_name = response.data.sale_info.item_name
-        this.form.amount = response.data.sale_info.amount
-        this.form.date = response.data.sale_info.date
-        this.form.description = response.data.sale_info.description
-        console.log(this.form)
+    getproducts() {
+      axiosIns.get('api/v1/shop/product').then(response => {
+        this.products = response.data
       })
     },
   },

@@ -108,6 +108,6 @@ class AuthController extends Controller
 
     public function getLoggedUserDetails()
     {
-        return auth('user-api')->user();
+        return User::with('shop')->find(auth('user-api')->user()->id);
     }
 }

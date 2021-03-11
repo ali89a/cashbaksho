@@ -30,9 +30,9 @@
         <template #button-content>
           <div class="d-sm-flex d-none user-nav">
             <p class="user-name font-weight-bolder mb-0">
-              John Doe
+              {{ user.name }}
             </p>
-            <span class="user-status">Admin</span>
+            <span class="user-status">{{ shop.name }}</span>
           </div>
           <b-avatar
             size="40"
@@ -75,6 +75,7 @@ import {
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
 import useJwt from "@/auth/jwt/useJwt";
 import {initialAbility} from "@/libs/acl/config";
+import axiosIns from '@/libs/axios';
 
 export default {
   components: {
@@ -94,6 +95,15 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      user: '',
+      shop: '',
+    }
+  },
+  mounted() {
+    this.getUserInfo()
+  },
   methods: {
     logout() {
       // Remove userData from localStorage
@@ -106,6 +116,12 @@ export default {
 
       // Redirect to login page
       this.$router.push({ name: 'user.login' })
+    },
+    getUserInfo() {
+      axiosIns.get('api/v1/shop/my-info').then(response => {
+        this.user = response.data
+        this.shop = response.data.shop
+      })
     },
   },
 }

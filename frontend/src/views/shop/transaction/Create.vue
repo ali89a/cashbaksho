@@ -3,75 +3,76 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Customer Information</span>
+          <span class="card-title">Transaction Information</span>
         </div>
         <div class="card-body">
-          <validation-observer ref="createCustomer">
+          <validation-observer ref="createtransaction">
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Full name">
+                  <label>Type</label>
+                  <select
+                    v-model="form.type"
+                    class="form-control"
+                    @change="getUser"
+                  >
+                    <option value="customer">
+                      Customer
+                    </option>
+                    <option value="supplier">
+                      Supplier
+                    </option>
+                  </select>
+                </b-col>
+                <b-col md="6">
+                  <label>Name</label>
+                  <select
+                    v-model="form.id"
+                    class="form-control"
+                    required
+                  >
+                    <option value="" selected>Choose one</option>
+                    <option :value="user.id" v-for="user in typeUsers">{{ user.name }}</option>
+                  </select>
+                </b-col>
+                <b-col md="6">
+                  <b-form-group label="Given">
                     <validation-provider
                       #default="{ errors }"
-                      name="Full Name"
-                      rules="required"
+                      name="Given"
                     >
                       <b-form-input
-                        v-model="form.name"
+                        v-model="form.given"
                         :state="errors.length > 0 ? false:null"
-                        placeholder="Full Name"
+                        placeholder="Given amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Phone number">
+                  <b-form-group label="Taken">
                     <validation-provider
                       #default="{ errors }"
-                      name="Phone number"
+                      name="Taken"
                     >
                       <b-form-input
-                        v-model="form.phone_number"
+                        v-model="form.taken"
                         :state="errors.length > 0 ? false:null"
                         type="text"
-                        placeholder="Phone number"
+                        placeholder="Taken amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <b-form-group label="Previous Due">
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Previous Due"
-                    >
-                      <b-form-input
-                        v-model="form.previous_due"
-                        :state="errors.length > 0 ? false:null"
-                        type="text"
-                        placeholder="Previous due"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
-                </b-col>
-                <b-col md="6">
-                  <b-form-group label="Description">
-                    <validation-provider
-                      #default="{ errors }"
-                      name="Description"
-                    >
-                      <b-form-textarea
-                        v-model="form.description"
-                        :state="errors.length > 0 ? false:null"
-                        placeholder="Description"
-                        rows="3"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                  </b-form-group>
+                  <label for="example-datepicker">Choose a date</label>
+                  <b-form-datepicker
+                    id="example-datepicker"
+                    v-model="form.date"
+                    class="mb-1"
+                  />
                 </b-col>
                 <b-col cols="12">
                   <b-button
@@ -114,33 +115,57 @@ export default {
   data() {
     return {
       form: {
-        name: '',
-        phone_number: '',
-        previous_due: '',
-        description: '',
+        type: 'customer',
+        id: '',
+        given: '',
+        taken: '',
+        date: '',
       },
+      typeUsers: [],
       required,
     }
   },
+  mounted() {
+    this.getCustomerData()
+  },
   methods: {
     validationForm() {
-      this.$refs.createCustomer.validate().then(success => {
+      this.$refs.createtransaction.validate().then(success => {
         if (success) {
-          axiosIns.post('api/v1/shop/customer', this.form).then(response => {
+          axiosIns.post('api/v1/shop/transaction', this.form).then(response => {
             // console.log(response)
             // first reset your form values
-            for (let key in this.form ) {
+            for (const key in this.form) {
               this.form[key] = ''
             }
             // then do this to reset your ValidationObserver
-            this.$nextTick(() => this.$refs.createCustomer.reset())
-            this.$bvToast.toast('Customer created successfully.', {
+            this.$nextTick(() => this.$refs.createtransaction.reset())
+            this.$bvToast.toast('transaction created successfully.', {
               title: 'Success',
               variant: 'success',
               solid: true,
             })
           })
         }
+      })
+    },
+    getUser() {
+      if (this.form.type == 'customer'){
+        this.getCustomerData()
+      } else {
+        this.getSupplierData()
+      }
+    },
+    getCustomerData() {
+      axiosIns.get('api/v1/shop/customer').then(response => {
+        // console.log(response.data)
+        this.typeUsers = response.data
+      })
+    },
+    getSupplierData() {
+      axiosIns.get('api/v1/shop/supplier').then(response => {
+        // console.log(response.data)
+        this.typeUsers = response.data
       })
     },
   },
