@@ -60,14 +60,15 @@
               >
                 <validation-provider
                     #default="{ errors }"
-                    name="Shop Name"
+                    name="shop_name"
                     rules="required"
                 >
                   <b-form-input
                       id="login-shop_name"
                       v-model="shop_name"
                       :state="errors.length > 0 ? false:null"
-                      name="Shop Name"
+                      name="shop_name"
+                      type="text"
                       placeholder="type shop name"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -80,14 +81,14 @@
               >
                 <validation-provider
                     #default="{ errors }"
-                    name="Name"
+                    name="name"
                     rules="required"
                 >
                   <b-form-input
                       id="Name"
                       v-model="name"
                       :state="errors.length > 0 ? false:null"
-                      name="Name"
+                      name="name"
                       placeholder="type your name"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -100,15 +101,15 @@
               >
                 <validation-provider
                   #default="{ errors }"
-                  name="Email"
-                  rules="required|email"
+                  name="email"
+                  rules="required"
                 >
                   <b-form-input
                     id="login-email"
-                    v-model="userEmail"
+                    v-model="email"
                     :state="errors.length > 0 ? false:null"
-                    name="login-email"
-                    placeholder="john@example.com"
+                    name="email"
+                    placeholder="user@example.com"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -118,7 +119,7 @@
               <b-form-group>
                 <validation-provider
                   #default="{ errors }"
-                  name="Password"
+                  name="password"
                   rules="required"
                 >
                   <b-input-group
@@ -130,15 +131,15 @@
                       v-model="password"
                       :state="errors.length > 0 ? false:null"
                       class="form-control-merge"
-                      :type="passwordFieldType"
-                      name="login-password"
+                      :type="passwordFieldType1"
+                      name="password"
                       placeholder="············"
                     />
                     <b-input-group-append is-text>
                       <feather-icon
                         class="cursor-pointer"
                         :icon="passwordToggleIcon"
-                        @click="togglePasswordVisibility"
+                        @click="togglePassword1"
                       />
                     </b-input-group-append>
                   </b-input-group>
@@ -149,7 +150,7 @@
               <b-form-group>
                 <validation-provider
                   #default="{ errors }"
-                  name="Password Confirmation"
+                  name="password_confirmation"
                   rules="required"
                 >
                   <b-input-group
@@ -161,15 +162,15 @@
                       v-model="password_confirmation"
                       :state="errors.length > 0 ? false:null"
                       class="form-control-merge"
-                      :type="passwordFieldType"
-                      name="login-password"
+                      :type="passwordFieldType2"
+                      name="password_confirmation"
                       placeholder="············"
                     />
                     <b-input-group-append is-text>
                       <feather-icon
                         class="cursor-pointer"
                         :icon="passwordToggleIcon"
-                        @click="togglePasswordVisibility"
+                        @click="togglePassword2"
                       />
                     </b-input-group-append>
                   </b-input-group>
@@ -220,7 +221,7 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton,
 } from 'bootstrap-vue'
-import { required, email } from '@validations'
+import { required } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import axiosIns from '@/libs/axios'
@@ -253,11 +254,12 @@ export default {
       name: '',
       password: '',
       password_confirmation: '',
-      userEmail: '',
+      email: '',
       sideImg: require('@/assets/images/pages/login-v2.svg'),
       // validation rulesimport store from '@/store/index'
       required,
-      email,
+      passwordFieldType1: 'password',
+      passwordFieldType2: 'password',
     }
   },
   computed: {
@@ -280,7 +282,7 @@ export default {
           axiosIns.post('api/v1/shop/register', {
             shop_name: this.shop_name,
             name: this.name,
-            email: this.userEmail,
+            email: this.email,
             password: this.password,
             password_confirmation: this.password_confirmation,
           }).then(response => {
@@ -289,21 +291,26 @@ export default {
             console.log(response)
             this.$router.push({ name: 'user.homepage' })
           }).catch(error => {
-            // this.$refs.loginValidation.setErrors(error.response.data.error)
-            console.log(error)
-            if (error.response.status === 422) {
-              // this.errors = error.response.data.error
-              this.$bvToast.toast(error.response.data.errors, {
-                title: 'Failed',
-                variant: 'danger',
-                solid: true,
-              })
-            }
+            console.log(error.response.data.errors)
+            this.$refs.loginValidation.setErrors(error.response.data.errors)
+            // if (error.response.status === 422) {
+            //   // this.errors = error.response.data.error
+            //   this.$bvToast.toast('Something went wrong.', {
+            //     title: 'Failed',
+            //     variant: 'danger',
+            //     solid: true,
+            //   })
+            // }
             // this.errors = error.response.data.errors
-            console.log(error.response.data)
           })
         }
       })
+    },
+    togglePassword1() {
+      this.passwordFieldType1 = this.passwordFieldType1 === 'password' ? 'text' : 'password'
+    },
+    togglePassword2() {
+      this.passwordFieldType2 = this.passwordFieldType2 === 'password' ? 'text' : 'password'
     },
   },
 }

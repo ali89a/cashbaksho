@@ -60,15 +60,15 @@
               >
                 <validation-provider
                   #default="{ errors }"
-                  name="Email"
-                  rules="required|email"
+                  name="email"
+                  rules="required"
                 >
                   <b-form-input
                     id="login-email"
-                    v-model="userEmail"
+                    v-model="email"
                     :state="errors.length > 0 ? false:null"
-                    name="login-email"
-                    placeholder="john@example.com"
+                    name="email"
+                    placeholder="user@example.com"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -78,7 +78,7 @@
               <b-form-group>
                 <validation-provider
                   #default="{ errors }"
-                  name="Password"
+                  name="password"
                   rules="required"
                 >
                   <b-input-group
@@ -91,7 +91,7 @@
                       :state="errors.length > 0 ? false:null"
                       class="form-control-merge"
                       :type="passwordFieldType"
-                      name="login-password"
+                      name="password"
                       placeholder="············"
                     />
                     <b-input-group-append is-text>
@@ -149,7 +149,7 @@ import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
   BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton,
 } from 'bootstrap-vue'
-import { required, email } from '@validations'
+import { required } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import axiosIns from '@/libs/axios'
@@ -179,11 +179,10 @@ export default {
     return {
       status: '',
       password: '',
-      userEmail: '',
+      email: '',
       sideImg: require('@/assets/images/pages/login-v2.svg'),
       // validation rulesimport store from '@/store/index'
       required,
-      email,
     }
   },
   computed: {
@@ -204,7 +203,7 @@ export default {
       this.$refs.loginValidation.validate().then(success => {
         if (success) {
           axiosIns.post('api/v1/shop/login', {
-            email: this.userEmail,
+            email: this.email,
             password: this.password,
           }).then(response => {
             useJwt.setToken(response.data.access_token)
@@ -212,7 +211,7 @@ export default {
             console.log(response)
             this.$router.push({ name: 'user.homepage' })
           }).catch(error => {
-            // this.$refs.loginValidation.setErrors(error.response.data.error)
+            this.$refs.loginValidation.setErrors(error.response.data.errors)
             console.log(error)
             if (error.response.status === 422) {
               // this.errors = error.response.data.error

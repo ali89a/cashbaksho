@@ -10,16 +10,16 @@
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Full name">
+                  <b-form-group label="Customer name">
                     <validation-provider
                       #default="{ errors }"
-                      name="Full Name"
+                      name="name"
                       rules="required"
                     >
                       <b-form-input
                         v-model="form.name"
                         :state="errors.length > 0 ? false:null"
-                        placeholder="Full Name"
+                        placeholder="Customer Name"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -29,7 +29,7 @@
                   <b-form-group label="Phone number">
                     <validation-provider
                       #default="{ errors }"
-                      name="Phone number"
+                      name="phone_number"
                     >
                       <b-form-input
                         v-model="form.phone_number"
@@ -45,7 +45,7 @@
                   <b-form-group label="Previous Due">
                     <validation-provider
                       #default="{ errors }"
-                      name="Previous Due"
+                      name="previous_due"
                     >
                       <b-form-input
                         v-model="form.previous_due"
@@ -61,7 +61,7 @@
                   <b-form-group label="Description">
                     <validation-provider
                       #default="{ errors }"
-                      name="Description"
+                      name="description"
                     >
                       <b-form-textarea
                         v-model="form.description"
@@ -139,6 +139,8 @@ export default {
               variant: 'success',
               solid: true,
             })
+          }).catch(error => {
+            this.$refs.createCustomer.setErrors(error.response.data.errors)
           })
         }
       })
