@@ -12,26 +12,36 @@
                 <b-col md="6">
                   <b-form-group label="Product name">
                     <select
-                        v-model="form.product_id"
-                        class="form-control"
-                        required
+                      v-model="form.product_id"
+                      class="form-control"
+                      required
                     >
-                      <option value="" selected>Choose one</option>
-                      <option :value="product.id" v-for="product in products">{{ product.name }}</option>
+                      <option
+                        value=""
+                        selected
+                      >
+                        Choose one
+                      </option>
+                      <option
+                        v-for="product in products"
+                        :value="product.id"
+                      >
+                        {{ product.name }}
+                      </option>
                     </select>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
                   <b-form-group label="Customer Name">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Customer Name"
+                      #default="{ errors }"
+                      name="Customer Name"
                     >
                       <b-form-input
-                          v-model="form.customer_name"
-                          :state="errors.length > 0 ? false:null"
-                          type="text"
-                          placeholder="Customer Name"
+                        v-model="form.customer_name"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="Customer Name"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -40,14 +50,14 @@
                 <b-col md="6">
                   <b-form-group label="Total amount">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Total amount"
+                      #default="{ errors }"
+                      name="Total amount"
                     >
                       <b-form-input
-                          v-model="form.total_amount"
-                          :state="errors.length > 0 ? false:null"
-                          type="text"
-                          placeholder="Total amount"
+                        v-model="form.total_amount"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="Total amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -56,14 +66,14 @@
                 <b-col md="6">
                   <b-form-group label="Total Installment">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Total Installment"
+                      #default="{ errors }"
+                      name="Total Installment"
                     >
                       <b-form-input
-                          v-model="form.total_installment"
-                          :state="errors.length > 0 ? false:null"
-                          type="text"
-                          placeholder="Total Installment"
+                        v-model="form.total_installment"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="Total Installment"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -71,9 +81,9 @@
                 </b-col>
                 <b-col cols="12">
                   <b-button
-                      variant="primary"
-                      type="submit"
-                      @click.prevent="validationForm"
+                    variant="primary"
+                    type="submit"
+                    @click.prevent="validationForm"
                   >
                     Submit
                   </b-button>
@@ -129,7 +139,7 @@ export default {
           axiosIns.post('api/v1/shop/emi', this.form).then(response => {
             // console.log(response)
             // first reset your form values
-            for (let key in this.form ) {
+            for (const key in this.form) {
               this.form[key] = ''
             }
             // then do this to reset your ValidationObserver

@@ -3,7 +3,7 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">emi Information</span>
+          <span class="card-title">EMI Information</span>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"

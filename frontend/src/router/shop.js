@@ -344,10 +344,10 @@ export default [
     component: () => import('@/views/shop/emi/Index.vue'),
     meta: {
       authOnly: true,
-      pageTitle: 'Emi',
+      pageTitle: 'EMI',
       breadcrumb: [
         {
-          text: 'Emi list',
+          text: 'EMI list',
           active: true,
         },
       ],
@@ -359,7 +359,7 @@ export default [
     component: () => import('@/views/shop/emi/Create.vue'),
     meta: {
       authOnly: true,
-      pageTitle: 'Create emi',
+      pageTitle: 'Create EMI',
       breadcrumb: [
         {
           text: 'Emi',

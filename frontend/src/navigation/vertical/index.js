@@ -35,7 +35,7 @@ export default [
     icon: 'FileIcon',
   },
   {
-    title: 'Emi',
+    title: 'EMI',
     route: 'shop.emi',
     icon: 'FileIcon',
   },
