@@ -19,13 +19,14 @@ class SaleController extends Controller
      */
     public function index()
     {
-        return Sale::where('shop_id', auth('user-api')->user()->shop_id)->get();
+        return Sale::with('product','customer')->where('shop_id', auth('user-api')->user()->shop_id)->get();
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'item_name' => 'required|string|max:255',
+            'product_id' => 'required',
+            'customer_id' => 'required',
             'amount' => 'required|numeric',
             'date' => '',
             'description' => 'max:500',
@@ -41,7 +42,8 @@ class SaleController extends Controller
         try {
             $purchase = Sale::create([
                 'shop_id' => $request->user()->shop->id,
-                'item_name' => $request->item_name,
+                'product_id' => $request->product_id,
+                'customer_id' => $request->customer_id,
                 'amount' => $request->amount,
                 'date' => $request->date,
                 'description' => $request->description,
@@ -52,20 +54,12 @@ class SaleController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             // something went wrong
+            return response()->json(['success' => true, 'message' => 'Something went wrong.',]);
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'New Sale created successfully.',
-        ],Response::HTTP_CREATED);
+        return response()->json(['success' => true, 'message' => 'New Sale created successfully.',],Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $sale = Sale::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
@@ -75,17 +69,11 @@ class SaleController extends Controller
         return response()->json(['success' => true, 'sale_info' => $sale,]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'item_name' => 'required|string|max:255',
+            'product_id' => 'required',
+            'customer_id' => 'required',
             'amount' => 'required|numeric',
             'date' => '',
             'description' => 'max:500',
@@ -96,7 +84,8 @@ class SaleController extends Controller
         $sale = Sale::where('shop_id', auth('user-api')->user()->shop_id)->find($id);
         if ($sale){
             $sale->update([
-                'item_name' => $request->item_name,
+                'product_id' => $request->product_id,
+                'customer_id' => $request->customer_id,
                 'amount' => $request->amount,
                 'date' => $request->date,
                 'description' => $request->description,
@@ -106,12 +95,6 @@ class SaleController extends Controller
         return response()->json(['success' => false, 'message' => 'No Sale found.',]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $sale = Sale::where('shop_id', auth('user-api')->user()->shop_id)->find($id);

@@ -10,33 +10,63 @@
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Item Name">
-                    <validation-provider
-                        #default="{ errors }"
-                        name="Item Name"
-                        rules="required"
+                  <b-form-group label="Customer name">
+                    <select
+                      v-model="form.customer_id"
+                      class="form-control"
+                      required
                     >
-                      <b-form-input
-                          v-model="form.item_name"
-                          :state="errors.length > 0 ? false:null"
-                          placeholder="Item Name"
-                      />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
+                      <option
+                        value=""
+                        selected
+                      >
+                        Choose one
+                      </option>
+                      <option
+                        v-for="customer in customers"
+                        :key="customer.id"
+                        :value="customer.id"
+                      >
+                        {{ customer.name }}
+                      </option>
+                    </select>
+                  </b-form-group>
+                </b-col>
+                <b-col md="6">
+                  <b-form-group label="Product name">
+                    <select
+                      v-model="form.product_id"
+                      class="form-control"
+                      required
+                    >
+                      <option
+                        value=""
+                        selected
+                      >
+                        Choose one
+                      </option>
+                      <option
+                        v-for="product in products"
+                        :key="product.id"
+                        :value="product.id"
+                      >
+                        {{ product.name }}
+                      </option>
+                    </select>
                   </b-form-group>
                 </b-col>
                 <b-col md="6">
                   <b-form-group label="Amount">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Amount"
-                        rules="required"
+                      #default="{ errors }"
+                      name="Amount"
+                      rules="required"
                     >
                       <b-form-input
-                          v-model="form.amount"
-                          :state="errors.length > 0 ? false:null"
-                          type="text"
-                          placeholder="amount"
+                        v-model="form.amount"
+                        :state="errors.length > 0 ? false:null"
+                        type="text"
+                        placeholder="amount"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -45,22 +75,22 @@
                 <b-col md="6">
                   <label for="example-datepicker">Choose a date</label>
                   <b-form-datepicker
-                      id="example-datepicker"
-                      v-model="form.date"
-                      class="mb-1"
+                    id="example-datepicker"
+                    v-model="form.date"
+                    class="mb-1"
                   />
                 </b-col>
                 <b-col md="6">
                   <b-form-group label="Description">
                     <validation-provider
-                        #default="{ errors }"
-                        name="Description"
+                      #default="{ errors }"
+                      name="Description"
                     >
                       <b-form-textarea
-                          v-model="form.description"
-                          :state="errors.length > 0 ? false:null"
-                          placeholder="Description"
-                          rows="3"
+                        v-model="form.description"
+                        :state="errors.length > 0 ? false:null"
+                        placeholder="Description"
+                        rows="3"
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
                     </validation-provider>
@@ -68,9 +98,9 @@
                 </b-col>
                 <b-col cols="12">
                   <b-button
-                      variant="primary"
-                      type="submit"
-                      @click.prevent="validationForm"
+                    variant="primary"
+                    type="submit"
+                    @click.prevent="validationForm"
                   >
                     Submit
                   </b-button>
@@ -108,22 +138,41 @@ export default {
   data() {
     return {
       form: {
-        item_name: '',
+        product_id: '',
+        customer_id: '',
         amount: '',
         date: '',
         description: '',
       },
+      customers: [],
+      products: [],
       required,
     }
   },
+  mounted() {
+    this.getCustomerData()
+    this.getProducts()
+  },
   methods: {
+    getCustomerData() {
+      axiosIns.get('api/v1/shop/customer').then(response => {
+        // console.log(response.data)
+        this.customers = response.data
+      })
+    },
+    getProducts() {
+      axiosIns.get('api/v1/shop/product').then(response => {
+        // console.log(response.data)
+        this.products = response.data
+      })
+    },
     validationForm() {
       this.$refs.createsale.validate().then(success => {
         if (success) {
           axiosIns.post('api/v1/shop/sale', this.form).then(response => {
             // console.log(response)
             // first reset your form values
-            for (let key in this.form ) {
+            for (const key in this.form) {
               this.form[key] = ''
             }
             // then do this to reset your ValidationObserver

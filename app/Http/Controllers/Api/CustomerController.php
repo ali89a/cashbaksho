@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\Customers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
@@ -20,7 +20,14 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('customers')->where(function($query){
+                    $query->where('shop_id',auth('user-api')->user()->shop_id);
+                })
+            ],
             'phone_number' => 'numeric|nullable',
             'previous_due' => 'numeric|nullable',
             'description' => 'nullable|string|max:500',
@@ -75,7 +82,14 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('customers')->ignore($id,'id')->where(function($query){
+                    $query->where('shop_id',auth('user-api')->user()->shop_id);
+                })
+            ],
             'phone_number' => 'numeric|nullable',
             'description' => 'nullable|string|max:500',
         ]);

@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{{ asset(mix('css/app.css')) }}">
 
   <!-- Favicon -->
-  <link rel="shortcut icon" href="{{ asset('images/logo/favicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('/images/_/_/_/_/starter-kit/frontend/src/assets/images/logo/cashbaksho.png') }}">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 </head>
 <body>

@@ -10,10 +10,10 @@
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <b-form-group label="Full name">
+                  <b-form-group label="Customer name">
                     <validation-provider
                       #default="{ errors }"
-                      name="Full Name"
+                      name="name"
                       rules="required"
                     >
                       <b-form-input
@@ -29,7 +29,7 @@
                   <b-form-group label="Phone number">
                     <validation-provider
                       #default="{ errors }"
-                      name="Phone number"
+                      name="phone_number"
                     >
                       <b-form-input
                         v-model="form.phone_number"
@@ -45,7 +45,7 @@
                   <b-form-group label="Description">
                     <validation-provider
                       #default="{ errors }"
-                      name="Description"
+                      name="description"
                     >
                       <b-form-textarea
                         v-model="form.description"
@@ -120,12 +120,22 @@ export default {
               variant: 'success',
               solid: true,
             })
+          }).catch(error => {
+            this.$refs.createCustomer.setErrors(error.response.data.errors)
           })
         }
       })
     },
     getCustomerInfo() {
       axiosIns.get(`api/v1/shop/customer/${this.$route.params.id}`).then(response => {
+        if (!response.data.success){
+          this.$bvToast.toast(response.data.message, {
+            title: 'Failed',
+            variant: 'warning',
+            solid: true,
+          })
+          this.$router.push({ name: 'shop.customer' })
+        }
         this.form.name = response.data.customer_info.name
         this.form.phone_number = response.data.customer_info.phone_number
         this.form.description = response.data.customer_info.description

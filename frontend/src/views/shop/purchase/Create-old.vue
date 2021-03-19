@@ -12,54 +12,49 @@
                 <b-row>
                   <b-col md="6">
                     <b-form-group label="Supplier name">
-                      <select
-                        v-model="form.supplier_id"
-                        class="form-control"
-                        required
+                      <v-select
+                        dir="ltr"
+                        :options="suppliers"
+                        label="name"
+                        :reduce="supplier => supplier.id"
+                        :clearable="false"
                       >
-                        <option
-                          value=""
-                          selected
-                        >
-                          Choose one
-                        </option>
-                        <option
-                          v-for="supplier in suppliers"
-                          :value="supplier.id"
-                        >
-                          {{ supplier.name }}
-                        </option>
-                      </select>
+                        <template #list-header>
+                          <li
+                            v-b-toggle.sidebar-add-new-suplier
+                            class="add-new-client-header d-flex align-items-center my-50"
+                          >
+                            <feather-icon
+                              icon="PlusIcon"
+                              size="16"
+                            />
+                            <span class="align-middle ml-25">Add New Supplier</span>
+                          </li>
+                        </template>
+                      </v-select>
                     </b-form-group>
                   </b-col>
                   <b-col md="6">
-                    <b-form-group label="Product name">
-                      <select
-                        v-model="form.product_id"
-                        class="form-control"
-                        required
+                    <b-form-group label="Item Name">
+                      <validation-provider
+                        #default="{ errors }"
+                        name="Item Name"
+                        rules="required"
                       >
-                        <option
-                          value=""
-                          selected
-                        >
-                          Choose one
-                        </option>
-                        <option
-                          v-for="product in products"
-                          :value="product.id"
-                          :key="product.id"
-                        >
-                          {{ product.name }}
-                        </option>
-                      </select>
+                        <b-form-input
+                          v-model="form.item_name"
+                          :state="errors.length > 0 ? false:null"
+                          placeholder="Item Name"
+                        />
+                        <small class="text-danger">{{ errors[0] }}</small>
+                      </validation-provider>
                     </b-form-group>
                   </b-col>
                   <b-col md="6">
                     <b-form-group label="Amount">
                       <validation-provider
                         #default="{ errors }"
-                        name="amount"
+                        name="Amount"
                         rules="required"
                       >
                         <b-form-input
@@ -84,7 +79,7 @@
                     <b-form-group label="Description">
                       <validation-provider
                         #default="{ errors }"
-                        name="description"
+                        name="Description"
                       >
                         <b-form-textarea
                           v-model="form.description"
@@ -113,6 +108,50 @@
         <!-- form -->
       </b-col>
     </b-row>
+    <b-sidebar
+      id="sidebar-add-new-suplier"
+      sidebar-class="sidebar-lg"
+      bg-variant="white"
+      shadow
+      backdrop
+      no-header
+      right
+    >
+      <template #default="{ hide }">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center content-sidebar-header px-2 py-1">
+          <h5 class="mb-0">
+            Add Supplier
+          </h5>
+
+          <feather-icon
+            class="ml-1 cursor-pointer"
+            icon="XIcon"
+            size="16"
+            @click="hide"
+          />
+
+        </div>
+
+        <b-form
+          class="p-2"
+          @submit.prevent
+        >
+
+          <!-- Customer Name -->
+          <b-form-group
+            label="Customer Name"
+            label-for="customer-name"
+          >
+            <b-form-input
+              id="customer-name"
+              trim
+              placeholder="John Doe"
+            />
+          </b-form-group>
+        </b-form>
+      </template>
+    </b-sidebar>
   </section>
 </template>
 
@@ -143,32 +182,24 @@ export default {
   data() {
     return {
       form: {
-        product_id: '',
+        item_name: '',
         supplier_id: '',
         amount: '',
         date: '',
         description: '',
       },
       suppliers: [],
-      products: [],
       required,
     }
   },
   mounted() {
     this.getsupplierData()
-    this.getProducts()
   },
   methods: {
     getsupplierData() {
       axiosIns.get('api/v1/shop/supplier').then(response => {
         // console.log(response.data)
         this.suppliers = response.data
-      })
-    },
-    getProducts() {
-      axiosIns.get('api/v1/shop/product').then(response => {
-        // console.log(response.data)
-        this.products = response.data
       })
     },
     validationForm() {
@@ -189,8 +220,6 @@ export default {
             })
           })
         }
-      }).catch(error => {
-        this.$refs.createpurchase.setErrors(error.response.data.errors)
       })
     },
   },

@@ -13,7 +13,7 @@
                   <b-form-group label="Full name">
                     <validation-provider
                       #default="{ errors }"
-                      name="Full Name"
+                      name="name"
                       rules="required"
                     >
                       <b-form-input
@@ -29,7 +29,7 @@
                   <b-form-group label="Phone number">
                     <validation-provider
                       #default="{ errors }"
-                      name="Phone number"
+                      name="phone_number"
                     >
                       <b-form-input
                         v-model="form.phone_number"
@@ -45,7 +45,7 @@
                   <b-form-group label="Description">
                     <validation-provider
                       #default="{ errors }"
-                      name="Description"
+                      name="description"
                     >
                       <b-form-textarea
                         v-model="form.description"
@@ -120,6 +120,8 @@ export default {
               variant: 'success',
               solid: true,
             })
+          }).catch(error => {
+            this.$refs.createsupplier.setErrors(error.response.data.errors)
           })
         }
       })

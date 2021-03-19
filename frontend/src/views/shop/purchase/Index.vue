@@ -3,7 +3,7 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">purchase Information</span>
+          <span class="card-title">Purchase List</span>
           <b-button
             v-ripple.400="'rgba(255, 255, 255, 0.15)'"
             variant="primary"
@@ -174,8 +174,12 @@ export default {
       dir: false,
       columns: [
         {
-          label: 'Item Name',
-          field: 'item_name',
+          label: 'Product',
+          field: 'product.name',
+        },
+        {
+          label: 'Supplier',
+          field: 'supplier.name',
         },
         {
           label: 'Amount',
@@ -184,10 +188,6 @@ export default {
         {
           label: 'Date',
           field: 'date',
-        },
-        {
-          label: 'Description',
-          field: 'description',
         },
         {
           label: 'Action',

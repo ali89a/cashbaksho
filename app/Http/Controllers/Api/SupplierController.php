@@ -7,6 +7,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class SupplierController extends Controller
@@ -20,7 +21,14 @@ class SupplierController extends Controller
     {
 //        return $request->user()->shop->id;
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('suppliers')->where(function($query){
+                    $query->where('shop_id',auth('user-api')->user()->shop_id);
+                })
+            ],
             'phone_number' => 'numeric|nullable',
             'previous_due' => 'numeric|nullable',
             'description' => 'nullable|string|max:500',
@@ -78,7 +86,14 @@ class SupplierController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('suppliers')->ignore($id,'id')->where(function($query){
+                    $query->where('shop_id',auth('user-api')->user()->shop_id);
+                })
+            ],
             'phone_number' => 'numeric|nullable',
             'description' => 'nullable|string|max:500',
         ]);

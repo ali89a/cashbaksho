@@ -174,8 +174,12 @@ export default {
       dir: false,
       columns: [
         {
-          label: 'Item Name',
-          field: 'item_name',
+          label: 'Product',
+          field: 'product.name',
+        },
+        {
+          label: 'Customer',
+          field: 'customer.name',
         },
         {
           label: 'Amount',
@@ -184,10 +188,6 @@ export default {
         {
           label: 'Date',
           field: 'date',
-        },
-        {
-          label: 'Description',
-          field: 'description',
         },
         {
           label: 'Action',

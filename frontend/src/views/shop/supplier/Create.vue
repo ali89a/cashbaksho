@@ -13,7 +13,7 @@
                   <b-form-group label="Full name">
                     <validation-provider
                       #default="{ errors }"
-                      name="Full Name"
+                      name="name"
                       rules="required"
                     >
                       <b-form-input
@@ -29,7 +29,7 @@
                   <b-form-group label="Phone number">
                     <validation-provider
                       #default="{ errors }"
-                      name="Phone number"
+                      name="phone_number"
                     >
                       <b-form-input
                         v-model="form.phone_number"
@@ -45,7 +45,7 @@
                   <b-form-group label="Previous Due">
                     <validation-provider
                       #default="{ errors }"
-                      name="Previous Due"
+                      name="previous_due"
                     >
                       <b-form-input
                         v-model="form.previous_due"
@@ -129,6 +129,7 @@ export default {
           axiosIns.post('api/v1/shop/supplier', this.form).then(response => {
             // console.log(response)
             // first reset your form values
+            // eslint-disable-next-line guard-for-in
             for (let key in this.form ) {
               this.form[key] = ''
             }
@@ -139,6 +140,8 @@ export default {
               variant: 'success',
               solid: true,
             })
+          }).catch(error => {
+            this.$refs.createsupplier.setErrors(error.response.data.errors)
           })
         }
       })

@@ -3,7 +3,7 @@
     <b-col cols="12">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Emi Information</span>
+          <span class="card-title">EMI Information</span>
         </div>
         <div class="card-body">
           <validation-observer ref="createemi">

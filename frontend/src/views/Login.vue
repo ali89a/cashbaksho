@@ -4,10 +4,10 @@
 
       <!-- Brand logo-->
       <b-link class="brand-logo">
-        <vuexy-logo />
-        <h2 class="brand-text text-primary ml-1">
-          Cash Baksho
-        </h2>
+        <img :src="appLogoImage" alt="" class="" width="100px">
+<!--        <h2 class="brand-text text-primary ml-1">-->
+<!--          Cash Baksho-->
+<!--        </h2>-->
       </b-link>
       <!-- /Brand logo-->
 
@@ -41,7 +41,7 @@
             title-tag="h2"
             class="font-weight-bold mb-1"
           >
-            Welcome to Cash Baksho! 👋
+            Welcome to Cash Baksho!
           </b-card-title>
           <b-card-text class="mb-2">
             Please sign-in to your account
@@ -144,6 +144,7 @@
 
 <script>
 /* eslint-disable global-require */
+import { $themeConfig } from '@themeConfig'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
@@ -185,6 +186,15 @@ export default {
       required,
     }
   },
+  setup(props) {
+    // App Name
+    const { appName, appLogoImage } = $themeConfig.app
+
+    return {
+      appName,
+      appLogoImage,
+    }
+  },
   computed: {
     passwordToggleIcon() {
       return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
@@ -211,7 +221,6 @@ export default {
             console.log(response)
             this.$router.push({ name: 'user.homepage' })
           }).catch(error => {
-            this.$refs.loginValidation.setErrors(error.response.data.errors)
             console.log(error)
             if (error.response.status === 422) {
               // this.errors = error.response.data.error
@@ -221,6 +230,7 @@ export default {
                 solid: true,
               })
             }
+            this.$refs.loginValidation.setErrors(error.response.data.errors)
             // this.errors = error.response.data.errors
             console.log(error.response.data)
           })

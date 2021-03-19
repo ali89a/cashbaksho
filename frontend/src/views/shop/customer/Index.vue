@@ -72,22 +72,19 @@
                         class="text-body align-middle mr-25"
                       />
                     </template>
-                    <b-dropdown-item>
+                    <b-dropdown-item :to="{name:'shop.customer.edit',params:{id:props.row.id}}">
                       <feather-icon
                         icon="Edit2Icon"
                         class="mr-50"
                       />
-                      <span><router-link :to="{name:'shop.customer.edit',params:{id:props.row.id}}">Edit</router-link></span>
+                      Edit
                     </b-dropdown-item>
-                    <b-dropdown-item>
+                    <b-dropdown-item @click.prevent="DeleteData(props.row.id)">
                       <feather-icon
                         icon="TrashIcon"
                         class="mr-50"
                       />
-                      <span><a
-                        href=""
-                        @click.prevent="DeleteData(props.row.id)"
-                      >Delete</a></span>
+                      <span>Delete</span>
                     </b-dropdown-item>
                   </b-dropdown>
                 </span>
