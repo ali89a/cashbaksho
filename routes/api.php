@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\EmiController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PurchaseController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TransactionController;
@@ -41,6 +42,9 @@ Route::group(['prefix' => 'v1/shop','as'=>'shop.'],function (){
         Route::apiResource('transaction',TransactionController::class);
         Route::apiResource('product',ProductController::class);
         Route::apiResource('emi',EmiController::class);
+
+        Route::get('report',[ReportController::class, 'report']);
+        Route::get('report/transaction',[ReportController::class, 'transaction']);
     });
 });
 

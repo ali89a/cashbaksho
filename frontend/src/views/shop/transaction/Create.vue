@@ -10,36 +10,49 @@
             <b-form>
               <b-row>
                 <b-col md="6">
-                  <label>Type</label>
-                  <select
-                    v-model="form.type"
-                    class="form-control"
-                    @change="getUser"
-                  >
-                    <option value="customer">
-                      Customer
-                    </option>
-                    <option value="supplier">
-                      Supplier
-                    </option>
-                  </select>
+                  <b-form-group label="Type">
+                    <select
+                      v-model="form.type"
+                      class="form-control"
+                      @change="getUser"
+                    >
+                      <option value="customer">
+                        Customer
+                      </option>
+                      <option value="supplier">
+                        Supplier
+                      </option>
+                    </select>
+                  </b-form-group>
                 </b-col>
                 <b-col md="6">
-                  <label>Name</label>
-                  <select
-                    v-model="form.id"
-                    class="form-control"
-                    required
-                  >
-                    <option value="" selected>Choose one</option>
-                    <option :value="user.id" v-for="user in typeUsers">{{ user.name }}</option>
-                  </select>
+                  <b-form-group label="Name">
+                    <select
+                      v-model="form.id"
+                      class="form-control"
+                      required
+                    >
+                      <option
+                        value=""
+                        selected
+                      >
+                        Choose one
+                      </option>
+                      <option
+                        v-for="user in typeUsers"
+                        :value="user.id"
+                        :key="user.id"
+                      >
+                        {{ user.name }}
+                      </option>
+                    </select>
+                  </b-form-group>
                 </b-col>
                 <b-col md="6">
                   <b-form-group label="Given">
                     <validation-provider
                       #default="{ errors }"
-                      name="Given"
+                      name="given"
                     >
                       <b-form-input
                         v-model="form.given"
@@ -54,7 +67,7 @@
                   <b-form-group label="Taken">
                     <validation-provider
                       #default="{ errors }"
-                      name="Taken"
+                      name="taken"
                     >
                       <b-form-input
                         v-model="form.taken"
@@ -145,12 +158,14 @@ export default {
               variant: 'success',
               solid: true,
             })
+          }).catch(error => {
+            this.$refs.createtransaction.setErrors(error.response.data.errors)
           })
         }
       })
     },
     getUser() {
-      if (this.form.type == 'customer'){
+      if (this.form.type == 'customer') {
         this.getCustomerData()
       } else {
         this.getSupplierData()

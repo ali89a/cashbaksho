@@ -36,8 +36,8 @@ class TransactionController extends Controller
         $validator = Validator::make($request->all(), [
             'type' => ['string',Rule::in(['customer','supplier'])],
             'id' => 'integer',
-            'given' => 'numeric|required_without:taken',
-            'taken' => 'numeric|required_without:given',
+            'given' => 'nullable|numeric|required_without:taken',
+            'taken' => 'nullable|numeric|required_without:given',
             'date' => '',
         ]);
         if ($validator->fails()) {

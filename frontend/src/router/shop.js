@@ -24,12 +24,6 @@ export default [
     meta: {
       authOnly: true,
       pageTitle: 'Home',
-      breadcrumb: [
-        {
-          text: 'Home',
-          active: true,
-        },
-      ],
     },
   },
   {

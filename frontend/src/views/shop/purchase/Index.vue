@@ -232,7 +232,6 @@ export default {
     },
     getpurchaseData() {
       axiosIns.get('api/v1/shop/purchase').then(response => {
-        // console.log(response.data)
         this.rows = response.data
       })
     },
